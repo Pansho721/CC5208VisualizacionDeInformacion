@@ -1,7 +1,10 @@
-networkx>=2.8
+global-land-mask
 matplotlib>=3.5
 geopandas>=1.1.4
+networkx>=2.8
 powerlaw>=1.5
 joblib>=1.5
 pandas>=2.0
 scipy>=1.10
+plotly>6.9
+cartopy

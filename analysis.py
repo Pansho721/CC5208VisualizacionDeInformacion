@@ -4,9 +4,7 @@ import pandas as pd
 import numpy as np
 import powerlaw
 import math
-import glob
 import sys
-import os
 
 def smallWorld(graph):
     print(f"[*Metrica*], [*valor*], [*valor ER equivalente*],")
@@ -56,15 +54,6 @@ def get_some_centrality(graph, lamdas=[nx.degree_centrality, alpha_centrality], 
         save_centrality({kind: compute_centrality(graph, lamdas[kinds.index(kind)], kind)}, f"DATA/OUTPUT/centrality_{kind}.csv")
 
 def get_graph_from_csv_with_header(file_path):
-    """
-    Reads a CSV file and creates a directed graph using NetworkX.
-
-    Args:
-        file_path (str): The path to the CSV file.
-
-    Returns:
-        networkx.DiGraph: A directed graph created from the CSV file.
-    """
     import csv
 
     G = nx.DiGraph()
@@ -73,8 +62,8 @@ def get_graph_from_csv_with_header(file_path):
         header = next(reader)  # Skip the header row
         for row in reader:
             if len(row) >= 7:
-                source, target = row[0], row[6]
-                G.add_edge(source, target)
+                source, target, weight = row[0], row[6], row[13]
+                G.add_edge(source, target, weight=float(weight))
     return G
 
 
@@ -119,8 +108,8 @@ def main(file_path):
     largest = nx.DiGraph(G.subgraph(max(nx.strongly_connected_components(G), key=len)))
     print(largest)
     smallWorld(largest)
-    get_some_centrality(G,[nx.degree_centrality, alpha_centrality], ['degree', 'alpha-centrality'])
-    for kind in ['degree','alpha-centrality']:
+    get_some_centrality(G,[nx.degree_centrality, alpha_centrality, nx.in_degree_centrality, nx.out_degree_centrality], ['degree', 'alpha-centrality', 'indegree', 'outdegree'])
+    for kind in ['degree','alpha-centrality','indegree','outdegree']:
         metric_path = f"DATA/OUTPUT/centrality_{kind}.csv"
         plot(metric_path, title=f"Histogram for {kind}", outdir=f"DATA/OUTPUT/Hist_{kind}")
 
